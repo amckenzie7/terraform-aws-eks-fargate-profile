@@ -59,9 +59,11 @@ data "aws_iam_policy_document" "assume_role" {
 resource "aws_iam_role" "default" {
   count = local.enabled ? 1 : 0
 
-  name                 = local.fargate_profile_iam_role_name
-  assume_role_policy   = join("", data.aws_iam_policy_document.assume_role.*.json)
-  tags                 = module.role_label.tags
+  name               = local.fargate_profile_iam_role_name
+  assume_role_policy = join("", data.aws_iam_policy_document.assume_role.*.json)
+  tags = merge(module.role_label.tags, {
+    user = "pchandaliya"
+  })
   permissions_boundary = var.permissions_boundary
 }
 
@@ -79,7 +81,9 @@ resource "aws_eks_fargate_profile" "default" {
   fargate_profile_name   = local.fargate_profile_name
   pod_execution_role_arn = join("", aws_iam_role.default.*.arn)
   subnet_ids             = var.subnet_ids
-  tags                   = module.fargate_profile_label.tags
+  tags = merge(module.fargate_profile_label.tags, {
+    user = "pchandaliya"
+  })
 
   selector {
     namespace = var.kubernetes_namespace

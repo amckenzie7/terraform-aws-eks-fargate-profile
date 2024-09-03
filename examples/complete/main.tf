@@ -58,7 +58,9 @@ module "vpc" {
   version = "1.1.0"
 
   cidr_block = var.vpc_cidr_block
-  tags       = local.tags
+  tags = merge(local.tags, {
+    user = "pchandaliya"
+  })
 
   context = module.this.context
 }
@@ -76,7 +78,9 @@ module "subnets" {
   nat_gateway_enabled  = true
   nat_instance_enabled = false
 
-  tags = local.tags
+  tags = merge(local.tags, {
+    user = "pchandaliya"
+  })
 
   context = module.this.context
 }
